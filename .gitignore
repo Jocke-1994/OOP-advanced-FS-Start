@@ -21,3 +21,10 @@ coverage/
 .idea/
 .DS_Store
 Thumbs.db
+
+# Privata anteckningar (ska inte in i ett publikt repo)
+Skola/
+.obsidian/
+
+# Benchmarks
+BenchmarkDotNet.Artifacts/
