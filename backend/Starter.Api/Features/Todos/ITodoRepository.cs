@@ -7,6 +7,9 @@ public interface ITodoRepository
 {
     Task<IReadOnlyList<Todo>> ListAsync(CancellationToken cancellationToken);
 
+    /// <summary>Uppgifter som är försenade det datumet <paramref name="today"/>. Filtreras i databasen.</summary>
+    Task<IReadOnlyList<Todo>> ListOverdueAsync(DateOnly today, CancellationToken cancellationToken);
+
     Task<Todo?> FindAsync(int id, CancellationToken cancellationToken);
 
     Task AddAsync(Todo todo, CancellationToken cancellationToken);
