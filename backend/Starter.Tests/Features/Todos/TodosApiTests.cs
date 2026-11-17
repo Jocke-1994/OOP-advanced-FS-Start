@@ -55,6 +55,20 @@ public sealed class TodosApiTests : IClassFixture<TodosApiTests.ApiFactory>
         Assert.DoesNotContain(overdue!, t => t.Title == "Skicka offert (AK-2.1)");
     }
 
+    // Bevisar att databasfiltret (WHERE DueDate < idag) fungerar på riktigt i SQLite.
+    // Datumet ligger före alla tider som testerna ställer klockan på, så det är alltid försenat.
+    [Fact]
+    [Trait("Krav", "AK-2.2")]
+    public async Task A_todo_due_in_the_past_is_listed_as_overdue()
+    {
+        await _client.PostAsJsonAsync("/api/todos", new { title = "Gammal faktura (AK-2.2)", dueDate = "2026-10-20" });
+
+        var overdue = await _client.GetFromJsonAsync<List<OverdueTodoResponse>>("/api/todos/overdue");
+
+        var todo = Assert.Single(overdue!, t => t.Title == "Gammal faktura (AK-2.2)");
+        Assert.True(todo.DaysLate > 0);
+    }
+
     public sealed class ApiFactory : WebApplicationFactory<Program>
     {
         private readonly string _databasePath = Path.Combine(Path.GetTempPath(), $"starter-test-{Guid.NewGuid()}.db");

@@ -11,9 +11,9 @@ public sealed class TodoRepository(AppDbContext db) : ITodoRepository
 
     // Samma regel som TodoDeadlines.IsOverdue, men som SQL (WHERE), så att databasen bara skickar
     // de försenade i stället för att vi hämtar alla uppgifter till minnet som Kim gjorde.
-    public async Task<IReadOnlyList<Todo>> ListOverdueAsync(DateTime now, CancellationToken cancellationToken) =>
+    public async Task<IReadOnlyList<Todo>> ListOverdueAsync(DateOnly today, CancellationToken cancellationToken) =>
         await db.Todos.AsNoTracking()
-            .Where(t => !t.IsDone && t.DueDate != null && t.DueDate < now)
+            .Where(t => !t.IsDone && t.DueDate != null && t.DueDate < today)
             .OrderBy(t => t.DueDate)
             .ToListAsync(cancellationToken);
 
